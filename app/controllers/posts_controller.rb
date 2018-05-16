@@ -5,6 +5,15 @@ class PostsController < ApplicationController
   # GET /posts.json
   def index
     @posts = Post.all
+    @post = Post.new
+  end
+
+  def search
+    if params[:search].present?
+      @posts = Post.where("title like ?", "%#{params[:search]}%")
+    else
+      @posts = Post.all
+    end
   end
 
   # GET /posts/1
@@ -25,11 +34,13 @@ class PostsController < ApplicationController
   # POST /posts.json
   def create
     @post = Post.new(post_params)
+    @posts = Post.all
 
     respond_to do |format|
       if @post.save
-        format.html { redirect_to @post, notice: 'Post was successfully created.' }
-        format.json { render :show, status: :created, location: @post }
+        format.js
+        #format.html { redirect_to @post, notice: 'Post was successfully created.' }
+        #format.json { render :show, status: :created, location: @post }
       else
         format.html { render :new }
         format.json { render json: @post.errors, status: :unprocessable_entity }
@@ -56,8 +67,9 @@ class PostsController < ApplicationController
   def destroy
     @post.destroy
     respond_to do |format|
-      format.html { redirect_to posts_url, notice: 'Post was successfully destroyed.' }
-      format.json { head :no_content }
+      format.js
+      #format.html { redirect_to posts_url, notice: 'Post was successfully destroyed.' }
+      #format.json { head :no_content }
     end
   end
 
@@ -69,6 +81,6 @@ class PostsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def post_params
-      params.require(:post).permit(:title)
+      params.require(:post).permit(:title, :image)
     end
 end

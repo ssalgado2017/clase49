@@ -1,8 +1,15 @@
 <p id="notice"><%= notice %></p>
 
+<%= render partial: "form", locals: {post: @post } %> 
+
 <h1>Posts</h1>
 
-<table>
+<hr>
+
+  <%= label_tag :search, "Buscar:" %>
+  <%= text_field_tag :search %>
+
+<table class="table table-responsive">
   <thead>
     <tr>
       <th>Title</th>
@@ -11,17 +18,36 @@
   </thead>
 
   <tbody>
-    <% @posts.each do |post| %>
-      <tr>
-        <td><%= post.title %></td>
-        <td><%= link_to 'Show', post %></td>
-        <td><%= link_to 'Edit', edit_post_path(post) %></td>
-        <td><%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
+    <%= render partial: "posts" %> 
   </tbody>
 </table>
 
 <br>
 
 <%= link_to 'New Post', new_post_path %>
+
+<script>
+  $("#search").on("keyup", function(){
+    var search = $("#search")
+    $.ajax({
+      url: '<%= search_posts_path %>',
+      type: 'POST',
+      dataType: 'script',
+      data: {
+        authenticity_token: '<%= form_authenticity_token %>',
+        search: search.val()
+      }
+    })
+    .done(function() {
+      console.log("success");
+    })
+    .fail(function() {
+      console.log("error");
+    })
+    .always(function() {
+      console.log("complete");
+    });
+
+
+  });
+</script>
